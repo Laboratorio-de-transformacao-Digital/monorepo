@@ -1,46 +1,68 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import '../estilos/chat.css';
 
+const socket = io('http://127.0.0.1:5000');
+
 const Chat = () => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [showDownloadButton, setShowDownloadButton] = useState(false);
+
   useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.innerHTML = `
-      import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0.2/dist/web.js';
+    socket.on('message', (data) => {
+      setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: data.text }]);
+    });
 
-      Typebot.initBubble({
-        typebot: "whatsapp-ltd-estacio-ia",
-        theme: {
-          button: { backgroundColor: "#035d54" },
-          chatWindow: {
-            backgroundColor: "https://s3.fr-par.scw.cloud/typebot/public/typebots/cli88mae30010mh0f0yzjqn48/background?v=1685470080750",
-          },
-        },
-      });
-    `;
-    document.body.appendChild(script);
+    socket.on('complete', () => {
+      setShowDownloadButton(true);
+    });
 
-    // Cleanup the script when the component is unmounted
     return () => {
-      document.body.removeChild(script);
+      socket.off('message');
+      socket.off('complete');
     };
   }, []);
+
+  const sendMessage = () => {
+    if (input.trim()) {
+      setMessages((prevMessages) => [...prevMessages, { type: 'user', text: input }]);
+      socket.emit('message', { text: input });
+      setInput('');
+    }
+  };
 
   return (
     <div className="chat-container">
       <h2 className="chat-title">Chat CR</h2>
       <div className="chat-box">
         <div className="messages">
-          <div className="message bot-message">Olá! Como posso ajudar você hoje?</div>
-          {/* Adicione aqui as mensagens do chat */}
+          {messages.map((message, index) => (
+            <div key={index} className={`message ${message.type}-message`}>
+              {message.text}
+            </div>
+          ))}
+          {showDownloadButton && (
+            <div className="message bot-message">
+              <a href="http://127.0.0.1:5000/download" target="_blank" rel="noopener noreferrer" className="download-link">
+                Baixar Currículo
+              </a>
+            </div>
+          )}
         </div>
         <div className="input-container">
-          <input type="text" placeholder="Digite sua mensagem..." className="chat-input" />
-          <button className="send-button">Enviar</button>
+          <input
+            type="text"
+            placeholder="Digite sua mensagem..."
+            className="chat-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <button className="send-button" onClick={sendMessage}>Enviar</button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Chat;
