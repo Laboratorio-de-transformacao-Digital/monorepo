@@ -22,5 +22,10 @@
       "src": "/(.*)",
       "dest": "/frontend/$1"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--legacy-peer-deps"
+    }
+  }
 }
