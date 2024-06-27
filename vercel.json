@@ -1,16 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["./**"],
-        "installCommand": "npm install --legacy-peer-deps"
-      }
+  "build": {
+    "env": {
+      "NPM_FLAGS": "--legacy-peer-deps"
     }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/" }
-  ]
+  }
 }
