@@ -10,7 +10,7 @@
     "@typebot.io/js": "^0.2.90",
     "@typebot.io/react": "^0.2.90",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.4.0",
+    "@types/node": "^20.14.7",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "patch-package": "^8.0.0",
@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "postinstall": "patch-package",
+    "postinstall": "npm install --legacy-peer-deps",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
