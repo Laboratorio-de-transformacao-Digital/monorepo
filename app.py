@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
 import os
 from fpdf import FPDF
-from flask import Flask, render_template, send_file, jsonify
+from flask import Flask, render_template, send_file, jsonify, send_from_directory
 from flask_socketio import SocketIO, emit
 from datetime import datetime
 
@@ -170,7 +170,8 @@ curriculo_data = {
     'academica': [],
     'experiencia': [],
     'certificacoes': [],
-    'idiomas': []
+    'idiomas': [],
+    'current_step': 0
 }
 
 steps = [
@@ -263,53 +264,55 @@ def handle_message(data):
     if 'dadosPessoais' not in curriculo_data:
         curriculo_data['dadosPessoais'] = {}
     
-    if 'current_step' not in curriculo_data:
-        curriculo_data['current_step'] = 0
+    step_index = curriculo_data['current_step']
 
-    step = steps[curriculo_data['current_step']]
+    if step_index < len(steps):
+        step = steps[step_index]
 
-    if 'section' in step:
-        section = step['section']
-        if section not in curriculo_data:
-            curriculo_data[section] = [{}]
-        if 'index' in step:
-            index = step['index']
-            if index >= len(curriculo_data[section]):
-                curriculo_data[section].append({})
-            if 'subkey' in step:
-                subkey = step['subkey']
-                if subkey not in curriculo_data[section][index]:
-                    curriculo_data[section][index][subkey] = []
-                curriculo_data[section][index][subkey].append(data['text'])
+        if 'section' in step:
+            section = step['section']
+            if section not in curriculo_data:
+                curriculo_data[section] = [{}]
+            if 'index' in step:
+                index = step['index']
+                if index >= len(curriculo_data[section]):
+                    curriculo_data[section].append({})
+                if 'subkey' in step:
+                    subkey = step['subkey']
+                    if subkey not in curriculo_data[section][index]:
+                        curriculo_data[section][index][subkey] = []
+                    curriculo_data[section][index][subkey].append(data['text'])
+                else:
+                    curriculo_data[section][index][step['key']] = data['text']
             else:
-                curriculo_data[section][index][step['key']] = data['text']
+                curriculo_data[section][step['key']] = data['text']
         else:
-            curriculo_data[section][step['key']] = data['text']
-    else:
-        curriculo_data['dadosPessoais'][step['key']] = data['text']
+            curriculo_data['dadosPessoais'][step['key']] = data['text']
 
-    curriculo_data['current_step'] += 1
+        curriculo_data['current_step'] += 1
 
-    if curriculo_data['current_step'] < len(steps):
-        next_step = steps[curriculo_data['current_step']]
-        emit('message', {'text': next_step['question']})
+        if curriculo_data['current_step'] < len(steps):
+            next_step = steps[curriculo_data['current_step']]
+            emit('message', {'text': next_step['question']})
+        else:
+            emit('message', {'text': 'Obrigado por fornecer todas as informações! Clique no link abaixo para baixar seu currículo.'})
+            emit('complete', {'link': '/download'})
     else:
-        emit('message', {'text': 'Obrigado por fornecer todas as informações! Clique no link abaixo para baixar seu currículo.'})
-        emit('complete', {'link': '/download'})
+        emit('message', {'text': 'Erro: Passo atual fora do intervalo dos passos definidos.'})
 
 @app.route('/download')
 def download_curriculo():
     pdf_file = generate_pdf(curriculo_data)
     return send_file(pdf_file, as_attachment=True)
 
-@app.route('/api/curriculos')
+@app.route('/curriculos/<filename>')
+def get_curriculo(filename):
+    return send_from_directory(CURRICULO_DIR, filename)
+
+@app.route('/curriculos')
 def list_curriculos():
     curriculos = os.listdir(CURRICULO_DIR)
     return jsonify(curriculos)
-
-@app.route('/curriculos/<filename>')
-def get_curriculo(filename):
-    return send_file(os.path.join(CURRICULO_DIR, filename))
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

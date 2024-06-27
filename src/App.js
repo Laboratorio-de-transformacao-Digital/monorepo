@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Login from './paginas/login';  // Corrigido: caminho relativo a partir de src
+import Login from './paginas/login';  // Ajuste conforme necessário
 import Cadastro from './paginas/cadastro';
-import Configuracao from './paginas/configuracao';  // Corrigido: caminho relativo a partir de src
-import Creditos from './paginas/creditos';  // Corrigido: caminho relativo a partir de src
-import Curriculos from './paginas/curriculos';  // Corrigido: caminho relativo a partir de src
-import Chat from './paginas/chat';  // Corrigido: caminho relativo a partir de src
-import './estilos/app.css';  // Corrigido: caminho relativo a partir de src
+import Configuracao from './paginas/configuracao';
+import Creditos from './paginas/creditos';
+import Curriculos from './paginas/curriculos';
+import Chat from './paginas/chat';
+import './estilos/app.css';
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
 
         <div className="content">
           <Routes>
-            <Route path="/login" element={<Login />} />  {/* Corrigido: caminho da rota */}
+            <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/configuracao" element={<Configuracao />} />
             <Route path="/creditos" element={<Creditos />} />
