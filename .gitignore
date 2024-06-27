@@ -1,41 +1,22 @@
-# Arquivos de sistema operacional
-.DS_Store
-Thumbs.db
+# Node modules
+node_modules/
 
-# Logs e arquivos temporários
-*.log
+# Build output
+build/
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Diretório node_modules
-node_modules/
-
-# Arquivos de build
-/build/
-.DS_Store
-
-# Variáveis de ambiente
-.env
-
-# Dependências específicas do IDE/editor
-.vscode/
+# Editor directories and files
 .idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
-# Cache e arquivos compilados
-*.pnp.js
-.pnp.js
-.pnp.data
-.cache/
-dist/
-coverage/
-
-# Arquivos de saída específicos do projeto
-/build
-
-# Arquivos de configuração
-*.yml
-*.lock
-
-# Arquivos de backup
-*.bak
+# OS files
+.DS_Store
+Thumbs.db
