@@ -320,9 +320,10 @@ if __name__ == '__main__':
 
 """
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, send_file
 from flask_socketio import SocketIO, emit
 from fpdf import FPDF
+import os
 
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -396,7 +397,7 @@ def generate_pdf(data):
     pdf.add_section("Experiência", experiencia_content)
     pdf.add_section("Formação Acadêmica", "\n".join([f"{form['curso']}\n{form['instituicao']}\n{form['periodo']}\n{form['statusAtual']}, {form['faseAtual']}" for form in data["academica"]]))
     pdf.add_section("Objetivo Profissional", data["objetivoProfissional"]["descricao"])
-    pdf_file = "/curriculos/curriculo.pdf"
+    pdf_file = "/tmp/curriculo.pdf"
     pdf.output(pdf_file)
     return pdf_file
 
