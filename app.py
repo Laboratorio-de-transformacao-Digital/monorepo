@@ -325,7 +325,7 @@ from flask_socketio import SocketIO, emit
 from fpdf import FPDF
 import os
 
-app = Flask(__name__, static_folder='../frontend/build', static_url_path='')
+app = Flask(__name__, static_folder='../build', static_url_path='')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Variável global para armazenar os dados do currículo
