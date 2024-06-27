@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "backend/app.py",
-      "use": "@vercel/python",
-      "env": {
-        "NPM_FLAGS": "--legacy-peer-deps"
-      }
+      "use": "@vercel/python"
     },
     {
       "src": "frontend/package.json",
